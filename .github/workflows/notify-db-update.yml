@@ -1,1 +1,28 @@
+name: Notify DB Update via FCM
 
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'athkar.bin'
+      - 'version.json'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install firebase-admin
+        run: npm install firebase-admin
+
+      - name: Send FCM notification
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node .github/scripts/notify-fcm.js
